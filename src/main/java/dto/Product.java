@@ -20,6 +20,13 @@ public class Product {
     public Product(int productId) {
         this.productId = productId;
     }
+    
+    public Product(int productIdIn, String name, BigDecimal priceIn, int numItemsIn){
+        this.productId = productIdIn;
+        this.productName = name;
+        this.price = priceIn;
+        this.numItems = numItemsIn;
+    }
 
     public int getProductId() {
         return productId;
