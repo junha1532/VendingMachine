@@ -14,5 +14,6 @@ import java.util.List;
  */
 public interface VendingMachineDao {
     List<Product> listProducts();
+    Product updateProduct(Product product);
     
 }
