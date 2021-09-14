@@ -12,9 +12,10 @@ import java.math.BigDecimal;
  * @author junha
  */
 public interface VendingMachineServiceLayer {
-    void listItems();
-    void validateSufficientFund(BigDecimal userInput);
-    void updateProduct(int productId);
-    void calculateChanges();
+    List<Product> listItems() ;//throws InsufficientFundsException, NoItemInventoryException;
+   // void validateSufficientFund(BigDecimal userInput);
+    void updateProduct(int productId);//throws InsufficientFundsException, NoItemInventoryException;
+    BigDecimal calculateChanges(BigDecimal userMoney,  int productId);//throws InsufficientFundsException, NoItemInventoryException;
+    
     
 }
