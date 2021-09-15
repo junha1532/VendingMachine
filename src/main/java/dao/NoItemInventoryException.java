@@ -9,6 +9,6 @@ package dao;
  *
  * @author junha
  */
-public class NoItemInventoryException {
+public class NoItemInventoryException extends Exception{
     
 }

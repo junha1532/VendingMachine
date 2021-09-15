@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author junha
  */
-public class VendingMachineServiceLayerImplimplements VendingMachineServiceLayer {
+public class VendingMachineServiceLayerImpl implements VendingMachineServiceLayer {
 
     private VendingMachineDao dao;
     private VendingMachineAuditDao auditdao;

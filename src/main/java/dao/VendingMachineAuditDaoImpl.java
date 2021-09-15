@@ -9,6 +9,6 @@ package dao;
  *
  * @author junha
  */
-public class VendingMachineAuditDaoImpl {
+public class VendingMachineAuditDaoImpl implements VendingMachineAuditDao{
     
 }

@@ -48,4 +48,17 @@ public class VendingMachineView {
         return new Product(prodId, name, price, numItems);
     }
     */
+
+    public void displayUnknownCommandBanner() {
+        io.print("Unknown Command");
+    }
+
+    public void displayExitMessage() {
+        io.print("Thanks you");
+    }
+
+    public void displayErrorMessage(String errMsg) {
+        io.print("ERROR");
+        io.print(errMsg);
+    }
 }
