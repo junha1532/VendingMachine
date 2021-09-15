@@ -8,6 +8,7 @@ package dao;
 import dto.Product;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,11 +30,18 @@ public class VendingMachineDaoImplTest {
         String testFile = "testInventory.txt";
         // Use the FileWriter to quickly blank the file
         
-        FileWriter fwrite = new FileWriter(testFile);
-        fwrite.write("1::CocaCola::2.0::10");
-        fwrite.write("2::Chips::1.5::10");
-        fwrite.write("3::InstantNoodles::2.0::10");
-        fwrite.write("4::MarsBar::1.0::0");
+        FileWriter fwrite = new FileWriter(testFile, true);
+        PrintWriter  printWriter = new PrintWriter(fwrite);
+        printWriter.write("1::CocaCola::2.0::10");
+        printWriter.write("\n");
+        printWriter.write("2::Chips::1.5::10");
+        printWriter.write("\n");
+        printWriter.write("3::InstantNoodles::2.0::10");
+        printWriter.write("\n");
+        printWriter.write("4::MarsBar::1.0::0");
+
+        printWriter.flush();
+        printWriter.close();
 
 
         testDao = new VendingMachineDaoImpl(testFile);
