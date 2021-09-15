@@ -8,6 +8,7 @@ package ui;
 import dto.Changes;
 import dto.Product;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -53,19 +54,19 @@ public class VendingMachineView {
         
         BigDecimal change = bigDecimalChange.multiply(new BigDecimal("100"));
         
-        BigDecimal dollar = change.divide(new BigDecimal("100"));
+        BigDecimal dollar = change.divide(new BigDecimal("100"), 0, RoundingMode.DOWN);
         change = change.remainder(new BigDecimal("100"));
         
-        BigDecimal quarters = change.divide(new BigDecimal("25"));
+        BigDecimal quarters = change.divide(new BigDecimal("25") , 0, RoundingMode.DOWN);
         change = change.remainder(new BigDecimal("25"));
         
-        BigDecimal dimes = change.divide(new BigDecimal("10"));
+        BigDecimal dimes = change.divide(new BigDecimal("10") , 0, RoundingMode.DOWN);
         change = change.remainder(new BigDecimal("10"));
         
-        BigDecimal nickels = change.divide(new BigDecimal("5"));
+        BigDecimal nickels = change.divide(new BigDecimal("5"), 0, RoundingMode.DOWN);
         change = change.remainder(new BigDecimal("5"));
         
-        BigDecimal pennies = change.divide(new BigDecimal("1"));
+        BigDecimal pennies = change.divide(new BigDecimal("1"), 0, RoundingMode.DOWN);
         
         
         io.print(String.format("Your $%s change was returned as follows : \n"

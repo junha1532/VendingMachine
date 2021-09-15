@@ -1,4 +1,4 @@
-1::CocaCola::2.0::9::
-2::Chips::1.5::4::
-3::ChocolateBars::2.5::9::
-4::GummyBears::1.5::1::
+1::CocaCola::2.0::8
+2::Chips::1.5::0
+3::ChocolateBars::2.5::8
+4::GummyBears::1.5::0
