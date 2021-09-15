@@ -5,6 +5,7 @@
  */
 package ui;
 
+import dto.Changes;
 import dto.Product;
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,6 +37,49 @@ public class VendingMachineView {
     public int getProductChoice(){
         int prodId = io.readInt("Please enter the I.D. number of you chosen item: ");
         return prodId;
+    }
+    
+    public int getSelection(){
+        int selection = io.readInt("Please enter your choice (1: Add cash 2: Exit) : ");
+        return selection;
+    }
+    
+    public BigDecimal getCash(){
+        BigDecimal cash = new BigDecimal(io.readString("Please enter the cash amount you would like to add : "));
+        return cash;
+    }
+    
+    public void dispenseChange(BigDecimal bigDecimalChange){
+        
+        BigDecimal change = bigDecimalChange.multiply(new BigDecimal("100"));
+        
+        BigDecimal dollar = change.divide(new BigDecimal("100"));
+        change = change.remainder(new BigDecimal("100"));
+        
+        BigDecimal quarters = change.divide(new BigDecimal("25"));
+        change = change.remainder(new BigDecimal("25"));
+        
+        BigDecimal dimes = change.divide(new BigDecimal("10"));
+        change = change.remainder(new BigDecimal("10"));
+        
+        BigDecimal nickels = change.divide(new BigDecimal("5"));
+        change = change.remainder(new BigDecimal("5"));
+        
+        BigDecimal pennies = change.divide(new BigDecimal("1"));
+        
+        
+        io.print(String.format("Your $%s change was returned as follows : \n"
+                + "%.0f %s \n"
+                + "%.0f %s \n"
+                + "%.0f %s \n"
+                + "%.0f %s \n"
+                + "%.0f %s \n"
+       , bigDecimalChange , dollar, Changes.DOLLARS, quarters, Changes.QUARTERS, dimes, Changes.DIMES, nickels, Changes.NICKELS, pennies, Changes.PENNIES));
+        
+    }
+    
+    public void displaySuccessPruchase(){
+        io.print("Purchase was sucessful");
     }
     
     /*

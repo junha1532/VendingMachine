@@ -5,12 +5,16 @@
  */
 package service;
 
+import dao.InsufficientFundsException;
+import dao.NoItemInventoryException;
 import dao.VendingMachineAuditDao;
 import dao.VendingMachineDao;
+import dao.VendingMachinePersistenceException;
 import dto.Product;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -28,43 +32,49 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
 
     @Override
     public List<Product> listItems() {//throws NoItemInventoryException;{
-        return dao.listProducts();
+        return validateItemNumber(dao.listProducts());
     }
 
-    public void validateItemNumber() {
-        
+    public List<Product> validateItemNumber(List<Product> productList) {
+        return productList.stream().filter((product) -> product.getNumItems() > 0).collect(Collectors.toList());
     }
     /*
     This method will check whether the user has sufficient fund
     */
    
-    public void validateSufficientFund(BigDecimal change, String productName) {
-        if(change.compareTo(BigDecimal.valueOf(0)) < 0){
-//            throw new InsufficientFundException(         
-//            
-//                    "ERROR: Could not buy the product "
-//                    + productName
-//                    + "...Insufficient Fund");
+    public void validateSufficientFund(BigDecimal change, String productName) throws InsufficientFundsException {
+        if(change.compareTo(new BigDecimal("0")) == -1){
+            throw new InsufficientFundsException(         
+            
+                    "ERROR: Could not buy the product "
+                    + productName
+                    + "...Insufficient Fund");
         }
         
         
     }
 
     @Override
-    public void updateProduct(int productId) {
-        //dao.UpdateProduct(productId);
-        //auditdao.writeAuditentry();
+    public void updateProduct(int productId) throws VendingMachinePersistenceException {
+        dao.updateProduct(productId);
+        auditdao.writeAuditEntry("The product " + productId + " was updated successfully");
     }
 
     /*
     this method will retrieve the cost of the product and find the change
      */
     @Override
-    public BigDecimal calculateChanges(BigDecimal userMoney, int productID) {
+    public BigDecimal calculateChanges(BigDecimal userMoney, int productID) throws InsufficientFundsException{
         Product product = dao.getProduct(productID);
         BigDecimal change;
         change = userMoney.subtract(product.getPrice());
         validateSufficientFund(change, product.getProductName());
+        
         return change.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    @Override
+    public Product getProduct(int productId) throws NoItemInventoryException {
+        return dao.getProduct(productId);
     }
 }

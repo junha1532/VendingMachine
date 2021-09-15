@@ -20,6 +20,7 @@ import java.util.List;
  * @author junha
  */
 public class VendingMachineController {
+
     private final VendingMachineView view;
     private final VendingMachineServiceLayer serviceLayer;
 
@@ -28,26 +29,35 @@ public class VendingMachineController {
         this.serviceLayer = serviceLayer;
     }
 
-    public void run(){
+    public void run() {
         boolean keepGoing = true;
         int menuSelection = 0;
-        try {
-            while (keepGoing) {
+
+        while (keepGoing) {
+            try {
+                BigDecimal customerCash = new BigDecimal("0");
                 listMenu();
                 menuSelection = getFirstSelection();
 
                 switch (menuSelection) {
-                    case 1 -> {
-                        addCash();
-                        run2();
+                    case 1: {
+                        customerCash = customerCash.add(addCash());
+                        purchaseProduct(customerCash);
+                        break;
                     }
-                    case 2 -> keepGoing = false;
-                    default -> unknownCommand();
+                    case 2:
+                        keepGoing = false;
+                        break;
+                    default:
+                        unknownCommand();
+                        break;
                 }
+            } catch (VendingMachinePersistenceException e) {
+                view.displayErrorMessage(e.getMessage());
+            } catch (InsufficientFundsException exc) {
+                view.displayErrorMessage(exc.getMessage());
             }
             exitMessage();
-        } catch (VendingMachinePersistenceException e) {
-            view.displayErrorMessage(e.getMessage());
         }
     }
 
@@ -65,38 +75,41 @@ public class VendingMachineController {
     }
 
     private int getFirstSelection() {
-        return view.displayInitialOptions(); //Display "Press 1 to add cash or press 2 to exit"
+        return view.getSelection();
     }
 
-    private void addCash() {
+    private BigDecimal addCash() {
         // use view.getCash() to input cash from console
-        serviceLayer.setCurrentCash(serviceLayer.getCurrentCash().add(view.getCash()));
+        BigDecimal cash = view.getCash();
+        return cash;
     }
 
     private int getSecondSelection() throws VendingMachinePersistenceException {
         return view.getProductChoice();
     }
 
-    private void run2() throws VendingMachinePersistenceException {
-        Product userChoice = null;
-        boolean keepGoing2 = false;
-        do {
-            listMenu();
-            try {
-                userChoice = getItem();
-                keepGoing2 = false;
-            } catch (InsufficientFundsException e) {
-                view.displayErrorMessage(e.getMessage());
-                keepGoing2 = true;
-            }
+    private void purchaseProduct(BigDecimal customerCash) throws VendingMachinePersistenceException, InsufficientFundsException {
 
-        } while (keepGoing2);
-        BigDecimal difference = serviceLayer.calculateChanges(serviceLayer.getCurrentCash(), userChoice.getProductId());
-        view.dispenseChange(difference);
-        serviceLayer.updateProduct(userChoice.getProductId());
+        boolean keepGoing2 = false;
+//        do {
+//            listMenu();
+//            try {
+//                userChoice = getItem();
+//                keepGoing2 = false;
+//            } catch (InsufficientFundsException e) {
+//                view.displayErrorMessage(e.getMessage());
+//                keepGoing2 = true;
+//            }
+//
+//        } while (keepGoing2);
+        int productChoice = view.getProductChoice();
+        BigDecimal change = serviceLayer.calculateChanges(customerCash, productChoice);
+        view.dispenseChange(change);
+        serviceLayer.updateProduct(productChoice);
+        view.displaySuccessPruchase();
     }
 
-    private Product getItem() throws VendingMachinePersistenceException, InsufficientFundsException {
+    private Product getItem() throws VendingMachinePersistenceException, InsufficientFundsException, NoItemInventoryException {
         Product productSelection = null;
         boolean keepGoing3 = true;
         do {
@@ -105,7 +118,7 @@ public class VendingMachineController {
                 addCash();
             } else {
                 try {
-                    productSelection = serviceLayer.getItem(itemSelection); //get a product
+                    productSelection = serviceLayer.getProduct(itemSelection); //get a product
                     keepGoing3 = false;
                 } catch (NoItemInventoryException e) {
                     view.displayErrorMessage(e.getMessage());

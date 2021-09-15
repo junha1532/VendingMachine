@@ -10,5 +10,5 @@ package dto;
  * @author junha
  */
 public enum Changes {
-    QUARTERS, DIMES, NICKELS, PENNIES
+    DOLLARS, QUARTERS, DIMES, NICKELS, PENNIES
 }

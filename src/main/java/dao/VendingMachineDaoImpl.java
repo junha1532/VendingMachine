@@ -27,8 +27,18 @@ import java.util.logging.Logger;
  */
 public class VendingMachineDaoImpl implements VendingMachineDao{
     Map<Integer, Product> inventory = new HashMap<Integer, Product>();
-    public static final String INVENTORY_FILE = "inventory.txt";
+    public final String INVENTORY_FILE;
     public static final String DELIMITER = "::";
+
+    public VendingMachineDaoImpl() {
+        INVENTORY_FILE = "inventory.txt";
+    }
+    
+    public VendingMachineDaoImpl(String fileName) {
+        INVENTORY_FILE = fileName;
+    }
+    
+    
     
     private Product unmarshallProduct(String productAsText){
         
@@ -94,7 +104,7 @@ public class VendingMachineDaoImpl implements VendingMachineDao{
         productAsText += aProduct.getPrice().toString() + DELIMITER;
 
         // NumItems
-        productAsText += aProduct.getNumItems() + DELIMITER;
+        productAsText += aProduct.getNumItems();
         
         // We have now turned a Product to text! Return it!
         return productAsText;
@@ -141,19 +151,27 @@ public class VendingMachineDaoImpl implements VendingMachineDao{
     }
 
     @Override
-    public Product updateProduct(Product product) {
+    public void updateProduct(int productId) {
         try {
             loadInventory();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(VendingMachineDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Product newProduct = inventory.put(product.getProductId(), product);
+        Product currProduct = inventory.get(productId);
+        currProduct.setNumItems(currProduct.getNumItems() - 1);
+        inventory.put(productId, currProduct);
+        
         try {
             writeInventory();
         } catch (IOException ex) {
             Logger.getLogger(VendingMachineDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return newProduct;
+        
+    }
+
+    @Override
+    public Product getProduct(int productId) {
+        return (inventory.get(productId));
     }
     
 }
